@@ -9,9 +9,9 @@ Step 1. 项目工程的build.gradle，添加jitpack库
 
 ```groovy
 allprojects {
-		repositories {
-			maven { url 'https://jitpack.io' }
-		}
+	repositories {
+		maven { url 'https://jitpack.io' }
+	}
 }
 ```
   
@@ -19,7 +19,7 @@ Step 2. 模块的build.gradle，添加ota依赖库
 
 ```groovy
 dependencies {
-	   implementation 'com.github.lilongweidev:phyota:1.0.0'
+	implementation 'com.github.lilongweidev:phyota:1.0.0'
 }
 ```
 
