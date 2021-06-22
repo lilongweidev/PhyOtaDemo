@@ -1,0 +1,3 @@
+rootProject.name = "PhyOtaDemo"
+include ':app'
+include ':phy_ota_sdk'
