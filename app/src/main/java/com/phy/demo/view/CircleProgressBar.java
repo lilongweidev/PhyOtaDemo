@@ -1,4 +1,4 @@
-package com.phy.ota.sdk.view;
+package com.phy.demo.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -16,7 +16,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 
-import com.phy.ota.sdk.R;
+import com.phy.demo.R;
 
 public class CircleProgressBar extends View {
     /**

@@ -8,7 +8,7 @@ import android.bluetooth.BluetoothProfile;
 import android.os.Build;
 import android.util.Log;
 
-import com.phy.ota.sdk.OTAUtils;
+import com.phy.ota.sdk.utils.OTAUtils;
 import com.phy.ota.sdk.constant.BleConstant;
 import com.phy.ota.sdk.constant.ErrorCode;
 import com.phy.ota.sdk.utils.AESTool;

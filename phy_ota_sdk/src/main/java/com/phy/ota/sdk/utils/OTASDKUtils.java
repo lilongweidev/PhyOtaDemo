@@ -1,4 +1,4 @@
-package com.phy.ota.sdk;
+package com.phy.ota.sdk.utils;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -11,8 +11,6 @@ import com.phy.ota.sdk.ble.OTACallback;
 import com.phy.ota.sdk.ble.OTAType;
 import com.phy.ota.sdk.ble.UpdateFirmwareCallback;
 import com.phy.ota.sdk.constant.ErrorCode;
-import com.phy.ota.sdk.utils.BleHelper;
-import com.phy.ota.sdk.utils.KLog;
 
 public class OTASDKUtils {
 

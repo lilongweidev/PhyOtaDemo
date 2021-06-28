@@ -1,4 +1,4 @@
-package com.phy.ota.sdk.dialog;
+package com.phy.demo.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,7 +8,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.phy.ota.sdk.R;
+import com.phy.demo.R;
+
 
 /**
  * 自定义弹窗 - Java

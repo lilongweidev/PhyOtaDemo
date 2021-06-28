@@ -1,4 +1,4 @@
-package com.phy.ota.sdk.dialog;
+package com.phy.demo.dialog;
 
 import android.content.Context;
 import android.util.SparseArray;

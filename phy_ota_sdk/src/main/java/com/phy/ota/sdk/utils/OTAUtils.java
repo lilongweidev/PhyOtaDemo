@@ -1,11 +1,10 @@
-package com.phy.ota.sdk;
+package com.phy.ota.sdk.utils;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -17,10 +16,6 @@ import com.phy.ota.sdk.ble.OTAType;
 import com.phy.ota.sdk.ble.OTAUtilsCallback;
 import com.phy.ota.sdk.constant.BaseConstant;
 import com.phy.ota.sdk.constant.ErrorCode;
-import com.phy.ota.sdk.utils.BleHelper;
-import com.phy.ota.sdk.utils.HexString;
-import com.phy.ota.sdk.utils.KLog;
-import com.phy.ota.sdk.utils.SPUtils;
 
 /**
  * OTA

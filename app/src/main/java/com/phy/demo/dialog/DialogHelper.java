@@ -1,8 +1,8 @@
-package com.phy.ota.sdk.dialog;
+package com.phy.demo.dialog;
 
 import android.content.Context;
 
-import com.phy.ota.sdk.R;
+import com.phy.demo.R;
 import com.phy.ota.sdk.utils.SizeUtils;
 
 public class DialogHelper {

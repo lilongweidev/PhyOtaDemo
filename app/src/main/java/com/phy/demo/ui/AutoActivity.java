@@ -20,7 +20,7 @@ import com.king.view.circleprogressview.CircleProgressView;
 import com.phy.demo.adapter.FileAdapter;
 import com.phy.demo.MyApplication;
 import com.phy.demo.R;
-import com.phy.ota.sdk.OTASDKUtils;
+import com.phy.ota.sdk.utils.OTASDKUtils;
 import com.phy.ota.sdk.ble.Device;
 import com.phy.ota.sdk.ble.UpdateFirmwareCallback;
 

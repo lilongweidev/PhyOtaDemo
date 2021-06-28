@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.phy.demo.adapter.FileAdapter;
 import com.phy.demo.R;
 import com.phy.demo.OTAHelper;
-import com.phy.ota.sdk.OTASDKUtils;
+import com.phy.ota.sdk.utils.OTASDKUtils;
 import com.phy.ota.sdk.ble.BandUtil;
 
 import java.util.ArrayList;

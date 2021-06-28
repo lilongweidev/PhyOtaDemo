@@ -7,7 +7,7 @@ import com.phy.ota.sdk.utils.DateUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.phy.ota.sdk.OTAUtils.MTU_SIZE;
+import static com.phy.ota.sdk.utils.OTAUtils.MTU_SIZE;
 
 /**
  * Partition

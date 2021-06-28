@@ -1,4 +1,4 @@
-package com.phy.ota.sdk.dialog;
+package com.phy.demo.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
 
-import com.phy.ota.sdk.R;
-
+import com.phy.demo.R;
 
 /**
  * 自定义弹窗

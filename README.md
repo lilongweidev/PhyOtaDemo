@@ -19,7 +19,7 @@ Step 2. 模块的build.gradle，添加ota依赖库
 
 ```groovy
 dependencies {
-	implementation 'com.github.lilongweidev:phyota:1.0.0'
+	implementation 'com.github.lilongweidev:phyota:1.0.1'
 }
 ```
 
