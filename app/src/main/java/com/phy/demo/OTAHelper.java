@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Environment;
@@ -14,6 +15,7 @@ import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -78,12 +80,12 @@ public class OTAHelper {
     //设备列表视图
     private static RecyclerView rvDevice;
     //文件路径
-    private static String filePath;
+    public static String filePath;
     //文件名称
-    private static String mFileName;
+    public static String fileName;
     private static String path = Environment.getExternalStorageDirectory().getPath();
     //设备Mac地址
-    private static String macAddress;
+    public static String macAddress;
     //设备
     private static Device device;
     //设备列表
@@ -92,6 +94,8 @@ public class OTAHelper {
     private static DeviceAdapter deviceAdapter;
 
     private static OTASDKUtils otasdkUtils;
+
+    private static boolean flag = false;
 
     public static void init(Context context) {
         mContext = context;
@@ -128,6 +132,7 @@ public class OTAHelper {
         @Override
         public void onProcess(float process) {
             Log.d(TAG, "onProcess:" + process);
+            flag = true;
             int progress = Math.round(process);
             //设置当前进度
         }
@@ -136,6 +141,7 @@ public class OTAHelper {
         public void onUpdateComplete() {
             hideLoading();
             Looper.prepare();
+            flag = false;
             showUpdateResultDialog(true, 0);
             Looper.loop();
             Log.d(TAG, "onUpdateComplete");
@@ -145,6 +151,7 @@ public class OTAHelper {
         public void onError(int code) {
             hideLoading();
             Looper.prepare();
+            flag = false;
             showUpdateResultDialog(false, code);
             Looper.loop();
             Log.d(TAG, "onError:" + code);
@@ -167,11 +174,16 @@ public class OTAHelper {
         }
     }
 
+    public static void readyToUpgrade(String macAddress, String fileName, String filePath) {
+        OTAHelper.macAddress = macAddress;
+        OTAHelper.fileName = fileName;
+        OTAHelper.filePath = filePath;
+    }
+
     /**
      * 显示秘钥弹窗
      */
-    public static void showAESKeyDialog(String fileName) {
-        mFileName = fileName;
+    public static void showAESKeyDialog() {
         String keyStr = SPUtils.getString(BaseConstant.AES_KEY, "");
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                 .addDefaultAnimation()
@@ -184,9 +196,10 @@ public class OTAHelper {
                 }).setOnClickListener(R.id.tv_show_key, v -> {
                     showKeyDialog(keyStr);
                     aesDialog.dismiss();
-                }).setOnClickListener(R.id.tv_search_device, v -> {
-                    //显示搜索设备弹窗
-                    showSearchDeviceDialog();
+                }).setOnClickListener(R.id.tv_start_upgrade, v -> {
+                    showLoading();
+                    //固件升级
+                    otasdkUtils.updateFirmware(macAddress, filePath, true);
                     aesDialog.dismiss();
                 });
         aesDialog = builder.create();
@@ -299,7 +312,7 @@ public class OTAHelper {
             //固件升级
             showLoading();
             stopSearchDevice();
-            updateFirmware(macAddress);
+            updateFirmware();
             searchDeviceDialog.dismiss();
         });
         deviceAdapter.setAnimationEnable(true);
@@ -328,10 +341,25 @@ public class OTAHelper {
     /**
      * 固件升级
      */
-    private static void updateFirmware(String macAddress) {
-        if (mFileName.endsWith(FILE_HEX) || mFileName.endsWith(FILE_HEX16)) {
+    public static void updateFirmware() {
+        if (fileName.endsWith(FILE_HEX) || fileName.endsWith(FILE_HEX16)) {
+            showLoading();
             otasdkUtils.updateFirmware(macAddress, filePath, false);
-        } else if (mFileName.endsWith(FILE_HEXE16)) {
+        } else if (fileName.endsWith(FILE_HEXE16)) {
+            showAESKeyDialog();
+        } else {
+            showLoading();
+            otasdkUtils.updateResource(macAddress, filePath);
+        }
+    }
+
+    /**
+     * 固件升级
+     */
+    public static void updateFirmware(String macAddress, String fileName, String filePath) {
+        if (fileName.endsWith(FILE_HEX) || OTAHelper.fileName.endsWith(FILE_HEX16)) {
+            otasdkUtils.updateFirmware(macAddress, filePath, false);
+        } else if (fileName.endsWith(FILE_HEXE16)) {
             otasdkUtils.updateFirmware(macAddress, filePath, true);
         } else {
             otasdkUtils.updateResource(macAddress, filePath);
@@ -345,8 +373,8 @@ public class OTAHelper {
      */
     public static boolean parseFile(String fileName) {
         showLoading();
-        mFileName = fileName;
-        filePath = path + "/" + mFileName;
+        OTAHelper.fileName = fileName;
+        filePath = path + "/" + OTAHelper.fileName;
         FirmWareFile firmWareFile = new FirmWareFile(filePath);
         if (firmWareFile.getCode() == BaseConstant.FILE_PARSE_SUCCESS) {
             hideLoading();
@@ -470,8 +498,22 @@ public class OTAHelper {
      * 显示加载弹窗
      */
     public static void showLoading() {
+        flag = true;
+
+        //监听页面·返回键
+        loadingDialog.setOnKeyListener((dialog, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                // you code here;
+                if(flag){
+                    showMsg("正在升级中，请勿退出。");
+                    return true;
+                }
+            }
+            return false;
+        });
         loadingDialog.show();
     }
+
 
     /**
      * 隐藏加载弹窗

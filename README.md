@@ -19,12 +19,12 @@ Step 2. 模块的build.gradle，添加ota依赖库
 
 ```groovy
 dependencies {
-	implementation 'com.github.lilongweidev:phyota:1.0.1'
+	implementation 'com.github.lilongweidev:phyota:1.0.3'
 }
 ```
 
-### 二、功能使用
+### 二、功能介绍
 
-库中提供了蓝牙ble扫描和连接，文件解析，ota升级，以及一些其他的工具类弹窗。
+库中提供了蓝牙ble扫描和连接，文件解析，ota升级。
 
 

@@ -16,13 +16,13 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.phy.demo.adapter.DeviceAdapter;
 import com.phy.demo.MyApplication;
 import com.phy.demo.R;
-import com.phy.demo.OTAHelper;
 import com.phy.ota.sdk.ble.BandUtil;
 import com.phy.ota.sdk.ble.ScanDeviceCallback;
 import com.phy.ota.sdk.ble.Device;
@@ -32,21 +32,15 @@ import com.phy.ota.sdk.utils.KLog;
 import java.util.ArrayList;
 import java.util.List;
 
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
-
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
-    public static final int REQUEST_PERMISSION_CODE = 9527;
     private static int REQUEST_ENABLE_BLUETOOTH = 1;//请求码
 
     private Device device;
     private List<Device> deviceList = new ArrayList<>();//设备列表
     private DeviceAdapter deviceAdapter;//设备列表适配器
     private RecyclerView rvDevice;
-    private boolean isScanning;
-
 
     private ScanDeviceCallback callBack = new ScanDeviceCallback() {
         @Override
@@ -70,16 +64,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //初始化列表
         initList();
-        //初始化弹窗功能
-        OTAHelper.init(this);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         deviceList.clear();
-        //检查Android版本
-        checkAndroidVersion();
+        //初始化蓝牙
+        initBluetooth();
     }
 
     /**
@@ -99,19 +92,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 检查Android版本
-     */
-    private void checkAndroidVersion() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //Android 6.0及以上动态请求权限
-            requestPermission();
-        } else {
-            //初始化蓝牙
-            initBluetooth();
-        }
-    }
-
-    /**
      * 初始化列表
      */
     private void initList() {
@@ -122,14 +102,12 @@ public class MainActivity extends AppCompatActivity {
         deviceAdapter.setOnItemClickListener((adapter, view, position) -> {
             //自动升级
             autoUpdate(position);
-            //FunctionDialogHelper.showAESKeyDialog();
         });
         deviceAdapter.setAnimationEnable(true);
         deviceAdapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.SlideInRight);
         rvDevice.setAdapter(deviceAdapter);
         //设置扫描回调
         BandUtil.setBleCallBack(callBack);
-        Log.e(TAG, "onCreate: " + String.format("%02X", (Integer.valueOf("00", 16) - 1) & 0xFF));
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(receiver, filter);
@@ -142,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void autoUpdate(int position) {
         BandUtil.getBandUtil(getApplicationContext()).stopScanDevice();
-        isScanning = false;
         device = deviceAdapter.getItem(position);
         MyApplication.getApplication().setDevice(device);
         Intent intent = new Intent(MainActivity.this, AutoActivity.class);
@@ -165,28 +142,6 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             Toast.makeText(this, "您的设备不支持蓝牙", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // Forward results to EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @AfterPermissionGranted(REQUEST_PERMISSION_CODE)
-    private void requestPermission() {
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            //初始化
-            initBluetooth();
-        } else {
-            // 没有权限
-            EasyPermissions.requestPermissions(this, "需要权限", REQUEST_PERMISSION_CODE, perms);
         }
     }
 
@@ -275,5 +230,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private long timeMillis;//几点时间
+    /**
+     * 增加一个退出应用的提示
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ((System.currentTimeMillis() - timeMillis) > 2000) {
+                Toast.makeText(this, "再按一次退出OTA App",Toast.LENGTH_SHORT).show();
+                timeMillis = System.currentTimeMillis();
+            } else {
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
 }

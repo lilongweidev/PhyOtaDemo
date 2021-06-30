@@ -126,6 +126,7 @@ public class CircleProgressBar extends View {
         textPaint.setDither(true);
     }
 
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {// 分别获取期望的宽度和高度，并取其中较小的尺寸作为该控件的宽和高
         int measureWidth = MeasureSpec.getSize(widthMeasureSpec);

@@ -3,7 +3,8 @@ plugins {
 }
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.lilongweidev'
+group = 'com.github.lilongweidev'
+
 
 android {
     compileSdkVersion 30
@@ -13,10 +14,17 @@ android {
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "2.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+    }
+
+    //自定义aar名称
+    android.libraryVariants.all { variant ->
+        variant.outputs.all {
+                outputFileName = "phy_ota_sdk-2.0.2.aar"
+        }
     }
 
     buildTypes {
@@ -32,21 +40,9 @@ android {
 }
 
 dependencies {
-
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'org.jetbrains:annotations:15.0'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
+    api 'androidx.appcompat:appcompat:1.2.0'
+    api 'org.jetbrains:annotations:15.0'
     //支持Androidx
     api 'no.nordicsemi.android.support.v18:scanner:1.5.0'
-    //权限请求 支持Androidx
-    api 'pub.devrel:easypermissions:3.0.0'
-    //让你的适配器一目了然，告别代码冗余
-    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
-    //加载框
-    api 'com.king.view:circleprogressview:1.1.2'
 
 }

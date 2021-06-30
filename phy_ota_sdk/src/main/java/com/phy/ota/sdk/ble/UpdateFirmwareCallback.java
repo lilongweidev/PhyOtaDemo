@@ -7,7 +7,7 @@ package com.phy.ota.sdk.ble;
 public interface UpdateFirmwareCallback {
 
     /**
-     * OTA更新进度%
+     * OTA更新进度
      * @param process 进度
      */
     void onProcess(float process);

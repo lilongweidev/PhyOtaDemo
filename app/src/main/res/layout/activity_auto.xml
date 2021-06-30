@@ -74,20 +74,4 @@
             android:overScrollMode="never" />
     </LinearLayout>
 
-    <View
-        android:id="@+id/v_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#99000000"
-        android:fitsSystemWindows="true"
-        android:visibility="gone" />
-
-    <com.king.view.circleprogressview.CircleProgressView
-        android:id="@+id/cpv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/circle_bg"
-        android:visibility="gone" />
-
 </RelativeLayout>
