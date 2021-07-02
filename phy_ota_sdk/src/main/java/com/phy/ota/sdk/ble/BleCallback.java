@@ -180,10 +180,12 @@ public class BleCallback extends BluetoothGattCallback {
         String uuidStr = characteristic.getUuid().toString();
         switch (uuidStr) {
             case OTA_CHARACTERISTIC_WRITE_UUID:
+                Log.d("OTA","onCharacteristicWrite OTA 特征写入");
                 //OTA特征写入 UUID
                 onOTACharacteristicWrite(gatt, characteristic);
                 break;
             case OTA_DATA_CHARACTERISTIC_WRITE_UUID:
+                Log.d("OTA","onCharacteristicWrite OTA数据 特征写入");
                 //OTA数据 特征写入 UUID
                 onOTADataCharacteristicWrite(gatt, characteristic, status);
                 break;
@@ -202,6 +204,7 @@ public class BleCallback extends BluetoothGattCallback {
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         String uuidStr = characteristic.getUuid().toString();
         response = HexString.parseStringHex(characteristic.getValue());
+        Log.d("OTA","onCharacteristicChanged response: " + response);
         if (uuidStr.equals(OTA_CHARACTERISTIC_INDICATE_UUID)) {
             Log.e(TAG, "收到特征值:" + HexString.parseStringHex(characteristic.getValue()));
             isResponse = true;
@@ -229,15 +232,25 @@ public class BleCallback extends BluetoothGattCallback {
                 if (!isCancel) {
                     retry(gatt, ErrorCode.OTA_DATA_WRITE_ERROR);
                 }
-            } else if (response.length() == 34 && response.startsWith("71")) {
+            } else  if (("0081").equals(response) || ("0084").equals(response) || "0089".equals(response)) {
+
+            }else if (response.length() == 34 && response.startsWith("71")){
                 firmwareCiphertext = response.substring(2);
                 //这里加休眠，时间不准确，Thread.sleep(100);
                 //在onCharacteristicWrite回调中去处理
-            } else {
-                if (!"0081".equals(response) && !("0084").equals(response) && !"0089".equals(response)) {
-                    mOtaUtilsCallback.onError(ErrorCode.OTA_RESPONSE_ERROR);
-                    KLog.e(TAG, "error:" + response);
-                }
+            }else if (response.length() == 34 && response.startsWith("72")){
+
+            }else if (response.length() == 34 && response.startsWith("73")){
+
+            }else if (response.length() == 34 && response.startsWith("8B")){
+
+            }else if (response.length() == 34 && response.startsWith("8C")){
+
+            }else if (response.length() == 34 && response.startsWith("8D")){
+
+            }else {
+                mOtaUtilsCallback.onError(ErrorCode.OTA_RESPONSE_ERROR);
+                Log.d(TAG, "error:" + response);
             }
         }
     }

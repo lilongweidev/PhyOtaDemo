@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -81,6 +82,7 @@ public class OTAUtils {
         //初始化缓存
         SPUtils.init(mContext);
         mBleCallBack.pwd = SPUtils.getString(BaseConstant.AES_KEY, "");
+        Log.d("pwd",mBleCallBack.pwd);
     }
 
     /**

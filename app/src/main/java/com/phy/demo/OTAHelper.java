@@ -61,22 +61,14 @@ public class OTAHelper {
 
     private static Context mContext;
 
-    //秘钥弹窗
-    private static AlertDialog aesDialog;
-    //设置秘钥弹窗
-    private static AlertDialog settingKeyDialog;
-    //查看秘钥弹窗
-    private static AlertDialog lookKeyDialog;
+
     //搜索设备弹窗
     private static AlertDialog searchDeviceDialog;
     //加载弹窗
     private static CustomDialog loadingDialog;
     //升级固件结果弹窗
     private static AlertDialog updateResultDialog;
-    //秘钥输入框
-    private static EditText etKey;
-    //清空输入框
-    private static ImageView ivClear;
+
     //设备列表视图
     private static RecyclerView rvDevice;
     //文件路径
@@ -180,113 +172,6 @@ public class OTAHelper {
         OTAHelper.filePath = filePath;
     }
 
-    /**
-     * 显示秘钥弹窗
-     */
-    public static void showAESKeyDialog() {
-        String keyStr = SPUtils.getString(BaseConstant.AES_KEY, "");
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-                .addDefaultAnimation()
-                .setContentView(R.layout.dialog_aes)
-                .setCancelable(true)
-                .setWidthAndHeight(SizeUtils.dp2px(mContext, 280), LinearLayout.LayoutParams.WRAP_CONTENT)
-                .setOnClickListener(R.id.tv_setting_key, v -> {
-                    showSettingKeyDialog();
-                    aesDialog.dismiss();
-                }).setOnClickListener(R.id.tv_show_key, v -> {
-                    showKeyDialog(keyStr);
-                    aesDialog.dismiss();
-                }).setOnClickListener(R.id.tv_start_upgrade, v -> {
-                    showLoading();
-                    //固件升级
-                    otasdkUtils.updateFirmware(macAddress, filePath, true);
-                    aesDialog.dismiss();
-                });
-        aesDialog = builder.create();
-        LinearLayout layHasKey = aesDialog.getView(R.id.lay_has_key);
-        layHasKey.setVisibility(keyStr.isEmpty() ? View.GONE : View.VISIBLE);
-        aesDialog.show();
-    }
-
-    /**
-     * 显示设置秘钥弹窗
-     */
-    private static void showSettingKeyDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-                .addDefaultAnimation()
-                .setContentView(R.layout.dialog_setting_key)
-                .setCancelable(true)
-                .setWidthAndHeight(SizeUtils.dp2px(mContext, 280), LinearLayout.LayoutParams.WRAP_CONTENT)
-                .setOnClickListener(R.id.iv_clear, v -> {
-                    etKey.setText("");
-                    ivClear.setVisibility(View.GONE);
-                })
-                .setOnClickListener(R.id.tv_cancel, v -> settingKeyDialog.dismiss())
-                .setOnClickListener(R.id.tv_submit, v -> {
-                    //提交
-                    String key = etKey.getText().toString();
-                    if (key.length() != 32) {
-                        showMsg("数据长度不足");
-                        return;
-                    }
-                    SPUtils.putString(BaseConstant.AES_KEY, key);
-                    copyKey(key);
-                    showMsg("设置成功且已复制");
-                    settingKeyDialog.dismiss();
-                });
-
-        settingKeyDialog = builder.create();
-        etKey = settingKeyDialog.getView(R.id.et_key);
-        TextView tvNum = settingKeyDialog.getView(R.id.tv_num);
-        ivClear = settingKeyDialog.getView(R.id.iv_clear);
-        //输入框监听
-        String keyStr = SPUtils.getString(BaseConstant.AES_KEY, "");
-        ivClear.setVisibility(keyStr.isEmpty() ? View.GONE : View.VISIBLE);
-        tvNum.setText(keyStr.length() + "/32");
-        etKey.setText(keyStr.isEmpty() ? "" : keyStr);
-        etKey.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    ivClear.setVisibility(View.VISIBLE);
-                } else {
-                    ivClear.setVisibility(View.GONE);
-                }
-                tvNum.setText(s.length() + "/32");
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        settingKeyDialog.show();
-    }
-
-
-    /**
-     * 显示秘钥内容弹窗
-     */
-    private static void showKeyDialog(String key) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-                .addDefaultAnimation()
-                .setContentView(R.layout.dialog_look_key)
-                .setCancelable(true)
-                .setWidthAndHeight(SizeUtils.dp2px(mContext, 300), LinearLayout.LayoutParams.WRAP_CONTENT)
-                .setText(R.id.tv_key, key)
-                .setOnClickListener(R.id.iv_copy, v -> {
-                    copyKey(key);
-                    showMsg("秘钥已复制");
-                    lookKeyDialog.dismiss();
-                });
-        lookKeyDialog = builder.create();
-        lookKeyDialog.show();
-    }
 
     /**
      * 显示搜索设备弹窗
@@ -346,7 +231,8 @@ public class OTAHelper {
             showLoading();
             otasdkUtils.updateFirmware(macAddress, filePath, false);
         } else if (fileName.endsWith(FILE_HEXE16)) {
-            showAESKeyDialog();
+            showLoading();
+            otasdkUtils.updateFirmware(macAddress, filePath, true);
         } else {
             showLoading();
             otasdkUtils.updateResource(macAddress, filePath);
@@ -407,20 +293,6 @@ public class OTAHelper {
         } else {
             showMsg("sdcard not found");
         }
-    }
-
-    /**
-     * 复制文本
-     *
-     * @param key
-     */
-    private static void copyKey(String key) {
-        //获取剪贴板管理器：
-        ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-        // 创建普通字符型ClipData
-        ClipData mClipData = ClipData.newPlainText("Label", key);
-        // 将ClipData内容放到系统剪贴板里。
-        cm.setPrimaryClip(mClipData);
     }
 
     /**

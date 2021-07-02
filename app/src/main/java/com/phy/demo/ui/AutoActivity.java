@@ -15,8 +15,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.king.view.circleprogressview.CircleProgressView;
 import com.phy.demo.OTAHelper;
 import com.phy.demo.adapter.FileAdapter;
 import com.phy.demo.MyApplication;
@@ -24,6 +22,7 @@ import com.phy.demo.R;
 import com.phy.ota.sdk.utils.OTASDKUtils;
 import com.phy.ota.sdk.ble.Device;
 import com.phy.ota.sdk.ble.UpdateFirmwareCallback;
+import com.phy.ota.sdk.utils.SPUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,7 +40,6 @@ public class AutoActivity extends AppCompatActivity {
     private TextView tvDeviceName, tvMacAddress;
     private RecyclerView rvFile;
     private Toolbar toolbar;
-    private CircleProgressView loadingProgressbar;
 
     private List<String> fileList = new ArrayList<>();
     private FileAdapter fileAdapter;
@@ -100,7 +98,13 @@ public class AutoActivity extends AppCompatActivity {
     private void updateFirmware(int position) {
         filePath = path + "/" + fileList.get(position);
         String fileName = fileList.get(position).toLowerCase();
-        Log.d(TAG, "start...");
+        if(fileName.endsWith(FILE_HEXE16)){
+            String aesKey = SPUtils.getString(AES_KEY, null);
+            if(aesKey == null){
+                showMsg("请设置密钥");
+                return;
+            }
+        }
         //准备升级
         OTAHelper.readyToUpgrade(macAddress, fileName, filePath);
 

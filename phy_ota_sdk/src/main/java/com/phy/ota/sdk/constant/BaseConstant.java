@@ -43,7 +43,6 @@ public class BaseConstant {
      */
     public static final String FIRMWARE_RECEIVE_SUCCESS = "0084";
 
-
     /**
      * 一组16*20 ota数据发送成功，开始下一组
      */

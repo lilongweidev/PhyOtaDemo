@@ -28,7 +28,7 @@ public class Partition {
         this.address = address;
         this.data = data;
 
-        partitionLength = data.length()/2;
+        partitionLength = data.length() / 2;
 
         analyzePartition(data);
     }
@@ -51,39 +51,34 @@ public class Partition {
 
     /**
      * 解析分区
+     *
      * @param data
      */
     private void analyzePartition(String data) {
         Log.d("Partition time", DateUtils.getNowTimeDetail());
         String partitionStr = data;
-
-        int size = MTU_SIZE-3;
-
+        int size = MTU_SIZE - 3;
         int index = 0;
         List<String> list = null;
-        while (true){
-            if(index == 0){
+        while (true) {
+            if (index == 0) {
                 list = new ArrayList<>();
             }
 
-            if(partitionStr.length() <= size*2){
+            if (partitionStr.length() <= size * 2) {
                 list.add(partitionStr);
                 blocks.add(list);
                 break;
-            }else{
-                String str = partitionStr.substring(0,size*2);
-                partitionStr = partitionStr.substring(size*2,partitionStr.length());
+            } else {
+                String str = partitionStr.substring(0, size * 2);
+                partitionStr = partitionStr.substring(size * 2, partitionStr.length());
                 list.add(str);
-
-                index ++;
+                index++;
             }
-
-
-            if (list.size() == 16){
+            if (list.size() == 16) {
                 blocks.add(list);
                 index = 0;
             }
-
         }
     }
 
@@ -105,7 +100,7 @@ public class Partition {
                 if ((crc & 0x0001) != 0) { // If the LSB is set
                     crc >>= 1; // Shift right and XOR 0xA001
                     crc ^= 0xA001;
-                } else{
+                } else {
                     // Else LSB is not set
                     crc >>= 1; // Just shift right
                 }

@@ -7,6 +7,7 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -128,6 +129,7 @@ public class BleScanner {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             if (mOtaUtilsCallback != null) {
+                Log.d("OTA","扫描结果");
                 mOtaUtilsCallback.onDeviceSearch(result.getDevice(),result.getRssi(),result.getScanRecord().getBytes());
             } else {
                 throw new RuntimeException("PHYBleCallBack is null");

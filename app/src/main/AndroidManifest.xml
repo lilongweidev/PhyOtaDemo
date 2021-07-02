@@ -6,8 +6,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- 只有支持ble的设备可以安装 -->
     <uses-feature
         android:name="android.hardware.bluetooth_le"
-        android:required="true" />
-    <!-- 定位权限 -->
+        android:required="true" /> <!-- 定位权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 文件读写 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -16,12 +15,13 @@
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ota_logo"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ota_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.PhyOtaDemo">
+        <activity android:name=".ui.MainPlusActivity"></activity>
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/SplashTheme">

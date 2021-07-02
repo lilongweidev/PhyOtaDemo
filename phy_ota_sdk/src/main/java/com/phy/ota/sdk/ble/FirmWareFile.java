@@ -68,7 +68,6 @@ public class FirmWareFile {
                     flag = 1;
                     address = address + readline.substring(3,7);
                 }
-
                 result.append(readline.substring(9,9+size*2));
             }
         } catch (FileNotFoundException e) {

@@ -92,7 +92,7 @@ public class SplashActivity extends AppCompatActivity {
                 Manifest.permission.READ_EXTERNAL_STORAGE};
         if (EasyPermissions.hasPermissions(this, perms)) {
             //动画结束时跳转到主页面
-            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            startActivity(new Intent(SplashActivity.this, MainPlusActivity.class));
         } else {
             // 没有权限
             EasyPermissions.requestPermissions(this, "需要权限", REQUEST_PERMISSION_CODE, perms);

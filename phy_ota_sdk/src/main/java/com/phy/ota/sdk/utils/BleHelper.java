@@ -53,6 +53,7 @@ public class BleHelper {
         }
         //获取Gatt OTA特征（特性）
         BluetoothGattCharacteristic gattCharacteristic = service.getCharacteristic(UUID.fromString(BleConstant.OTA_CHARACTERISTIC_INDICATE_UUID));
+        Log.d("OTA","enableIndicateNotification 启用指令通知");
         return setCharacteristicNotification(bluetoothGatt, gattCharacteristic);
     }
 
@@ -64,6 +65,7 @@ public class BleHelper {
         if (isEnableNotification) {
             BluetoothGattDescriptor gattDescriptor = gattCharacteristic.getDescriptor(UUID.fromString(BleConstant.DESCRIPTOR_UUID));
             gattDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+            Log.d("OTA","setCharacteristicNotification 设置特征通知");
             return bluetoothGatt.writeDescriptor(gattDescriptor);
         } else {
             return false;
@@ -90,15 +92,19 @@ public class BleHelper {
      * @return
      */
     public static boolean sendOTACommand(BluetoothGatt bluetoothGatt, String command, boolean isResponse) {
+        Log.d("OTA","sendOTACommand ");
         BluetoothGattService service = bluetoothGatt.getService(UUID.fromString(BleConstant.OTA_SERVICE_UUID));
         if (service == null) {
             return false;
         }
-        BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(BleConstant.OTA_CHARACTERISTIC_WRITE_UUID));
-        characteristic.setWriteType(!isResponse ? BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE : BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+        BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(
+                BleConstant.OTA_CHARACTERISTIC_WRITE_UUID));
+        characteristic.setWriteType(!isResponse ? BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE :
+                BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
         characteristic.setValue(HexString.parseHexString(command));
 
         boolean isOK = bluetoothGatt.writeCharacteristic(characteristic);
+        Log.d("OTA",isOK ? "成功：" + command : "失败：" + command);
         KLog.i("send ota command", isOK ? "成功：" + command : "失败：" + command);
         return true;
     }
@@ -129,7 +135,7 @@ public class BleHelper {
 
         BluetoothGattCharacteristic gattCharacteristic = service.getCharacteristic(UUID.fromString(BleConstant.OTA_DATA_CHARACTERISTIC_WRITE_UUID));
         gattCharacteristic.setValue(HexString.parseHexString(cmd.toLowerCase()));
-
+        Log.d("OTA","sendOTAData ");
         bluetoothGatt.writeCharacteristic(gattCharacteristic);
         return true;
     }
